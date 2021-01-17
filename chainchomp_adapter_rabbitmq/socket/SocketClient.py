@@ -2,6 +2,7 @@ import asyncio
 import socketio
 from chainchomplib import LoggerInterface
 from chainchomplib.adapterlayer.MessageDeserializer import MessageDeserializer
+from chainchomplib.adapterlayer.RemoteChainfileDTODeserializer import RemoteChainfileDTODeserializer
 from chainchomplib.configlayer.ChainfileDeserializer import ChainfileDeserializer
 from chainchomplib.data import SocketEvents
 
@@ -39,9 +40,9 @@ async def on_receive_local_chainfile(data):
 
 @sio.on(SocketEvents.EMIT_REMOTE_CHAINFILE_TO_ADAPTER)
 async def on_receive_remote_chainfile(data):
-    chainfile = ChainfileDeserializer.deserialize(data)
-    if chainfile is not None:
-        ChainfileHandler.handle_incoming_remote_chainfile(chainfile)
+    remote_chainfile_dto = RemoteChainfileDTODeserializer.deserialize(data)
+    if remote_chainfile_dto is not None:
+        ChainfileHandler.handle_incoming_remote_chainfile(remote_chainfile_dto, consumer, producer)
     else:
         LoggerInterface.error(f'A received data package was not properly formatted. It will be ignored {data}')
 

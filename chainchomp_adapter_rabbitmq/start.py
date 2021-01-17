@@ -1,2 +1,1 @@
-
-
+from chainchomp_adapter_rabbitmq.socket.SocketClient import connect
