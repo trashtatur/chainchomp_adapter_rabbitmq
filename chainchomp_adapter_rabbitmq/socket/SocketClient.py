@@ -1,6 +1,4 @@
 import asyncio
-from typing import Optional
-
 import socketio
 from chainchomplib import LoggerInterface
 from chainchomplib.adapterlayer.MessageDeserializer import MessageDeserializer
@@ -8,16 +6,16 @@ from chainchomplib.configlayer.ChainfileDeserializer import ChainfileDeserialize
 from chainchomplib.data import SocketEvents
 
 from chainchomp_adapter_rabbitmq.messaging.ChainfileHandler import ChainfileHandler
-from chainchomp_adapter_rabbitmq.messaging.MessageHandler import MessageHandler
+from chainchomp_adapter_rabbitmq.messaging.OutgoingMessageHandler import OutgoingMessageHandler
 from chainchomp_adapter_rabbitmq.rabbitmq.RabbitMQConnector import RabbitMQConnector
 from chainchomp_adapter_rabbitmq.rabbitmq.consumer.Consumer import Consumer
 from chainchomp_adapter_rabbitmq.rabbitmq.producer.Producer import Producer
-from chainchomp_adapter_rabbitmq.socket.Emitter import SocketEmitter
+from chainchomp_adapter_rabbitmq.socket.SocketEmitter import SocketEmitter
 
 sio = socketio.AsyncClient()
 URL = 'http://localhost:4410'
 socket_emitter = SocketEmitter(sio)
-consumer = Consumer()
+consumer = Consumer(socket_emitter)
 producer = Producer(RabbitMQConnector.connect_to_rabbit_mq_instance())
 
 
@@ -25,7 +23,7 @@ producer = Producer(RabbitMQConnector.connect_to_rabbit_mq_instance())
 async def on_receive_message(data):
     message = MessageDeserializer.deserialize(data)
     if message is not None:
-        MessageHandler.handle_outgoing_message(message, producer)
+        OutgoingMessageHandler.handle_outgoing_message(message, producer)
     else:
         LoggerInterface.error(f'A received data package was not properly formatted. It will be ignored {data}')
 
