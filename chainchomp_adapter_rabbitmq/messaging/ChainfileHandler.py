@@ -43,8 +43,8 @@ class ChainfileHandler:
 
         if remote_chainfile_dto.is_next:
             ChainfileHandler.__setup_for_next_of_remote_link(
-                remote_chainfile_dto.name_of_called_link,
                 remote_chainfile_dto.remote_link_addr,
+                remote_chainfile_dto.name_of_called_link,
                 consumer
             )
 

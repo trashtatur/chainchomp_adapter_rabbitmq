@@ -23,6 +23,7 @@ producer = Producer(RabbitMQConnector.connect_to_rabbit_mq_instance())
 @sio.on(SocketEvents.EMIT_TO_ADAPTER)
 async def on_receive_message(data):
     message = MessageDeserializer.deserialize(data)
+    await sio.emit(SocketEvents.EMIT_TO_APPLICATION, 'TEEER')
     if message is not None:
         OutgoingMessageHandler.handle_outgoing_message(message, producer)
     else:
@@ -48,7 +49,7 @@ async def on_receive_remote_chainfile(data):
 
 
 async def connect():
-    await sio.connect(URL, headers={'CHAINCHOMP_ADAPTER': 'rabbitmq'})
+    await sio.connect(URL, headers={'CHAINCHOMP_ADAPTER': 'chainchomp_rabbitmq'}, namespaces=['/'])
 
 
 def get_emitter() -> SocketEmitter:
