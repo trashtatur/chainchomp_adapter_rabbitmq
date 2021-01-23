@@ -22,7 +22,14 @@ class OutgoingMessageHandler:
         """
         recipients = message.message_header.recipients
         for recipient in recipients:
+            if not recipient in producer.publishers:
+                OutgoingMessageHandler.__prepare_publisher(producer, recipient)
             publisher: Publisher = producer.publishers[recipient]
             if publisher is None:
                 return
             publisher.publish(message, recipient)
+
+    @staticmethod
+    def __prepare_publisher(producer: Producer, recipient: str):
+        recipient_name = recipient.split('::')[1]
+        producer.create_new_publisher(recipient_name)

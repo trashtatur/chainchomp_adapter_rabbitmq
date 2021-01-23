@@ -23,7 +23,6 @@ producer = Producer(RabbitMQConnector.connect_to_rabbit_mq_instance())
 @sio.on(SocketEvents.EMIT_TO_ADAPTER)
 async def on_receive_message(data):
     message = MessageDeserializer.deserialize(data)
-    await sio.emit(SocketEvents.EMIT_TO_APPLICATION, 'TEEER')
     if message is not None:
         OutgoingMessageHandler.handle_outgoing_message(message, producer)
     else:
@@ -34,7 +33,7 @@ async def on_receive_message(data):
 async def on_receive_local_chainfile(data):
     chainfile = ChainfileDeserializer.deserialize(data)
     if chainfile is not None:
-        ChainfileHandler.handle_incoming_local_chainfile(chainfile, consumer, producer)
+        ChainfileHandler.handle_incoming_local_chainfile(chainfile, consumer)
     else:
         LoggerInterface.error(f'A received data package was not properly formatted. It will be ignored {data}')
 
@@ -43,7 +42,7 @@ async def on_receive_local_chainfile(data):
 async def on_receive_remote_chainfile(data):
     remote_chainfile_dto = RemoteChainfileDTODeserializer.deserialize(data)
     if remote_chainfile_dto is not None:
-        ChainfileHandler.handle_incoming_remote_chainfile(remote_chainfile_dto, consumer, producer)
+        ChainfileHandler.handle_incoming_remote_chainfile(remote_chainfile_dto, consumer)
     else:
         LoggerInterface.error(f'A received data package was not properly formatted. It will be ignored {data}')
 
