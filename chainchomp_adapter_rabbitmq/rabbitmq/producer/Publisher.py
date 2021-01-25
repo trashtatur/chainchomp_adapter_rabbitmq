@@ -11,9 +11,15 @@ class Publisher:
         self.name = name
         self.channel = channel
 
-    def publish(self, message: Message, key):
+    def publish(self, message: Message):
+        """
+        Publishers hold the routing key to which they publish in their name.
+        So the routing key can equal to the name of the publisher.
+        :param message: The message to be sent
+        :return: None
+        """
         self.channel.basic_publish(
             exchange=RabbitMQExchangeName.RABBITMQ_EXCHANGE_NAME,
-            routing_key=key,
+            routing_key=self.name,
             body=json.dumps(message.get_serialized())
         )

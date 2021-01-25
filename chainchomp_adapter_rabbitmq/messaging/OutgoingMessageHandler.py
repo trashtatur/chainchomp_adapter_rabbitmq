@@ -28,9 +28,8 @@ class OutgoingMessageHandler:
             publisher: Publisher = producer.publishers[recipient_name]
             if publisher is None:
                 return
-            publisher.publish(message, recipient_name)
+            publisher.publish(message)
 
     @staticmethod
     def __prepare_publisher(producer: Producer, recipient: str):
-
         producer.create_new_publisher(recipient)
