@@ -17,7 +17,7 @@ sio = socketio.AsyncClient()
 URL = 'http://localhost:4410'
 socket_emitter = SocketEmitter(sio)
 consumer = Consumer(socket_emitter)
-producer = Producer(RabbitMQConnector.connect_to_rabbit_mq_instance())
+producer = Producer(RabbitMQConnector.connect())
 
 
 @sio.on(SocketEvents.EMIT_TO_ADAPTER)

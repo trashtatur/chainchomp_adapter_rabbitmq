@@ -11,7 +11,7 @@ class ChainfileHandler:
     def handle_incoming_local_chainfile(chainfile_model: ChainfileModel, consumer: Consumer):
         for previous_link in chainfile_model.previous_links:
             name_and_ip = previous_link.split('::')
-            connection = RabbitMQConnector.connect_to_rabbit_mq_instance(name_and_ip[0])
+            connection = RabbitMQConnector.connect(name_and_ip[0])
             subscriber = consumer.create_new_subscriber(connection, chainfile_model.chainlink_name)
             subscriber.start_subscriber()
 
@@ -59,6 +59,6 @@ class ChainfileHandler:
         :param consumer: A consumer object to set up connections
         :return:
         """
-        connection = RabbitMQConnector.connect_to_rabbit_mq_instance(remote_link_address)
+        connection = RabbitMQConnector.connect(remote_link_address)
         subscriber = consumer.create_new_subscriber(connection, name_of_called_link)
         subscriber.start_subscriber()
