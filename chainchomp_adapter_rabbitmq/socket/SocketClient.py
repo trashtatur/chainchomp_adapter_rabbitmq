@@ -13,7 +13,7 @@ from chainchomp_adapter_rabbitmq.rabbitmq.consumer.Consumer import Consumer
 from chainchomp_adapter_rabbitmq.rabbitmq.producer.Producer import Producer
 from chainchomp_adapter_rabbitmq.socket.SocketEmitter import SocketEmitter
 
-sio = socketio.AsyncClient()
+sio = socketio.AsyncClient(engineio_logger=True)
 URL = 'http://localhost:4410'
 socket_emitter = SocketEmitter(sio)
 consumer = Consumer(socket_emitter)
@@ -48,7 +48,8 @@ async def on_receive_remote_chainfile(data):
 
 
 async def connect():
-    await sio.connect(URL, headers={'CHAINCHOMP_ADAPTER': 'chainchomp_rabbitmq'}, namespaces=['/'])
+    await sio.connect(URL, headers={'CHAINCHOMP_ADAPTER': 'chainchomp_rabbitmq'}, )
+    await sio.wait()
 
 
 def get_emitter() -> SocketEmitter:

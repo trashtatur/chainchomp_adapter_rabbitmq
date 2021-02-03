@@ -16,13 +16,6 @@ class Producer:
             exchange_type='direct',
             durable=True
         )
-        resulted_queue = self.channel.queue_declare(queue='', exclusive=True, durable=True)
-        queue_name = resulted_queue.method.queue
-        self.channel.queue_bind(
-            exchange=RabbitMQExchangeName.RABBITMQ_EXCHANGE_NAME,
-            queue=queue_name,
-            routing_key=name
-        )
         publisher = Publisher(name, self.channel)
         self.publishers[name] = publisher
         return publisher
